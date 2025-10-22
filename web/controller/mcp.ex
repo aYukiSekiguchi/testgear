@@ -94,7 +94,7 @@ defmodule Testgear.Controller.Mcp do
         content: [
           %{
             type: "text",
-            text: "API Response (200): #{data}"
+            text: "API Response (200): #{data} from TestGear!"
           }
         ]
       },
@@ -112,5 +112,18 @@ defmodule Testgear.Controller.Mcp do
     conn
     |> Conn.send_chunked(200, %{"content-type" => "text/event-stream"})
     |> Conn.chunk(sse_message)
+  end
+
+  def method_not_allowed(conn) do
+    response = %{
+      jsonrpc: "2.0",
+      error: %{
+        code: -32000,
+        message: "Method not allowed."
+      },
+      id: nil
+    }
+
+    Conn.json(conn, 405, response)
   end
 end
