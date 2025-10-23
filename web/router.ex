@@ -98,9 +98,11 @@ defmodule Testgear.Router do
   post   "/openapi/req_body_ref", OpenApi, :req_body_ref
   get    "/openapi/all_of"      , OpenApi, :all_of
 
-  post   "/mcp", Mcp, :chunked_response
+  post   "/mcp", Mcp, :chunked_response, sse: true
   get    "/mcp", Mcp, :method_not_allowed
   delete "/mcp", Mcp, :method_not_allowed
+
+  get "/sse", Hello, :sse, sse: true
 
   get "/stress/pi/:loop"  , Stress, :pi
   get "/stress/list/:loop", Stress, :list
