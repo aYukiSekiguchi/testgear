@@ -118,7 +118,7 @@ defmodule Testgear.Controller.Mcp do
     response = %{
       jsonrpc: "2.0",
       error: %{
-        code: -32000,
+        code: -32_000,
         message: "Method not allowed."
       },
       id: nil
