@@ -52,10 +52,13 @@ defmodule Testgear.McpServerHelper do
 
     @type t :: (Antikythera.Conn.t(), map() -> map())
 
-    def valid?(f) when is_function(f, 2), do: true
-    def valid?(_), do: false
+    defun valid?(f :: any) :: boolean do
+      is_function(f, 2)
+    end
 
-    def default, do: nil
+    defun default() :: nil do
+      nil
+    end
   end
 
   defmodule Tool do
@@ -252,7 +255,8 @@ defmodule Testgear.McpServerHelper do
     end
   end
 
-  def method_not_allowed(conn) do
+  @doc false
+  defun method_not_allowed(conn :: Antikythera.Conn.t) :: Antikythera.Conn.t do
     response = %{
       jsonrpc: "2.0",
       error: %{
@@ -283,7 +287,7 @@ defmodule Testgear.McpServerHelper do
         ]
       }
   """
-  def response_text(text) when is_binary(text) do
+  defun response_text(text :: String.t) :: map do
     %{
       content: [
         %{
@@ -313,7 +317,7 @@ defmodule Testgear.McpServerHelper do
         structuredContent: %{key: "value"}
       }
   """
-  def response_json(data) do
+  defun response_json(data :: map) :: map do
     json_text = Jason.encode!(data)
 
     %{

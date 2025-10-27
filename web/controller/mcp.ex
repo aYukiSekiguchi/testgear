@@ -1,9 +1,11 @@
 # Copyright(c) 2015-2024 ACCESS CO., LTD. All rights reserved.
 
+use Croma
+
 defmodule Testgear.Controller.Mcp do
   use Antikythera.Controller
 
-  alias Antikythera.{Request, G2gResponse}
+  alias Antikythera.{Conn, Request, G2gResponse}
   alias Testgear.McpServerHelper
   alias Testgear.McpServerHelper.Tool
 
@@ -59,11 +61,11 @@ defmodule Testgear.Controller.Mcp do
     server_version: "1.0.0",
     tools: [@testgear_tool, @json_tool]
 
-  def chunked_response(conn) do
+  defun chunked_response(conn :: Conn.t) :: Conn.t do
     handle_mcp_request(conn)
   end
 
-  def handle_testgear_tool(conn, arguments) do
+  defun handle_testgear_tool(conn :: Conn.t, arguments :: map) :: map do
     data = arguments["data"] || "hoge"
 
     path = Testgear.Router.content_decoding_path()
@@ -83,7 +85,7 @@ defmodule Testgear.Controller.Mcp do
     McpServerHelper.response_text("API Response (#{status}): #{response_body} from G2G")
   end
 
-  def handle_json_tool(conn, _arguments) do
+  defun handle_json_tool(conn :: Conn.t, _arguments :: map) :: map do
     conn2 = %Conn{
       conn |
       request: %Request{
