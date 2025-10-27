@@ -2,6 +2,7 @@
 
 defmodule Testgear.Controller.Mcp do
   use Antikythera.Controller
+  alias Antikythera.{Request, G2gResponse}
 
   def chunked_response(conn) do
     request_body = conn.request.body
@@ -89,12 +90,26 @@ defmodule Testgear.Controller.Mcp do
     arguments = params["arguments"] || %{}
     data = arguments["data"] || "hoge"
 
+    # Create a new connection to call the /content_decoding endpoint
+    conn2 = %Conn{
+      conn |
+      request: %Request{
+        conn.request |
+        method: :post,
+        path_info: ["content_decoding"],
+        body: data
+      }
+    }
+
+    # Call the /content_decoding endpoint
+    %G2gResponse{status: status, body: response_body} = Testgear.G2g.send(conn2)
+
     response = %{
       result: %{
         content: [
           %{
             type: "text",
-            text: "API Response (200): #{data} from TestGear!"
+            text: "API Response (#{status}): #{response_body} from G2G"
           }
         ]
       },
