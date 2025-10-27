@@ -112,6 +112,7 @@ defmodule Testgear.Controller.Mcp do
     conn
     |> Conn.send_chunked(200, %{"content-type" => "text/event-stream"})
     |> Conn.chunk(sse_message)
+    |> Conn.end_chunked()
   end
 
   def method_not_allowed(conn) do
