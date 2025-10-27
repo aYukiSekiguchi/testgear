@@ -295,7 +295,7 @@ defmodule Testgear.McpServerHelper do
   end
 
   @doc """
-  Creates a JSON response for MCP tool results.
+  Creates a JSON response for MCP tool results with structured content.
 
   ## Example
 
@@ -309,11 +309,21 @@ defmodule Testgear.McpServerHelper do
             type: "text",
             text: "{\\"key\\":\\"value\\"}"
           }
-        ]
+        ],
+        structuredContent: %{key: "value"}
       }
   """
   def response_json(data) do
     json_text = Jason.encode!(data)
-    response_text(json_text)
+
+    %{
+      content: [
+        %{
+          type: "text",
+          text: json_text
+        }
+      ],
+      structuredContent: data
+    }
   end
 end
