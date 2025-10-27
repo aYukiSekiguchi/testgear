@@ -60,7 +60,7 @@ defmodule Testgear.Router do
   get "/flash/with_notice", Flash, :with_notice
   get "/flash/redirect"   , Flash, :redirect
 
-  post "/content_decoding", ContentDecoding, :echo
+  post "/content_decoding", ContentDecoding, :echo, as: "content_decoding"
 
   get   "/only_from_web"             , Hello, :json, from: :web
   only_from_web do
