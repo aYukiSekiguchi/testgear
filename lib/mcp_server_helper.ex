@@ -152,7 +152,6 @@ defmodule Testgear.McpServerHelper do
       end
 
       defp handle_mcp_notification(conn) do
-        # Notifications don't require a response
         Conn.put_status(conn, 204)
       end
 
@@ -190,12 +189,10 @@ defmodule Testgear.McpServerHelper do
         tool_name = params["name"]
         arguments = params["arguments"] || %{}
 
-        # Find the matching tool
         tool = Enum.find(@mcp_tools, fn t -> t.name == tool_name end)
 
         response = if tool do
           try do
-            # Call the tool's callback function
             result = tool.callback.(conn, arguments)
 
             %{
@@ -255,29 +252,6 @@ defmodule Testgear.McpServerHelper do
     end
   end
 
-  @doc """
-  Returns a standard JSON-RPC 2.0 error response for method not allowed (405).
-
-  This response follows the JSON-RPC 2.0 specification for errors and uses
-  error code -32000 (Server error) with a "Method not allowed" message.
-
-  ## Example
-
-      def method_not_allowed(conn) do
-        McpServerHelper.method_not_allowed(conn)
-      end
-
-  Returns a 405 HTTP status with:
-
-      {
-        "jsonrpc": "2.0",
-        "error": {
-          "code": -32000,
-          "message": "Method not allowed."
-        },
-        "id": null
-      }
-  """
   def method_not_allowed(conn) do
     response = %{
       jsonrpc: "2.0",
