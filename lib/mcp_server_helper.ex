@@ -139,7 +139,7 @@ defmodule Testgear.McpServerHelper do
             protocolVersion: "2025-03-26",
             capabilities: %{
               tools: %{
-                listChanged: true
+                listChanged: false
               }
             },
             serverInfo: %{
