@@ -56,10 +56,32 @@ defmodule Testgear.Controller.Mcp do
     callback: &__MODULE__.handle_json_tool/2
   })
 
+  @auth_greeting_tool Tool.new!(%{
+    name: "auth_greeting",
+    description: "Get a personalized greeting by providing authorization credentials. Requires 'Bearer mykey_<username>' format in the authorization header.",
+    inputSchema: %{
+      type: "object",
+      properties: %{},
+      additionalProperties: false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    outputSchema: %{
+      type: "object",
+      properties: %{
+        status: %{type: "integer", description: "HTTP status code"},
+        body: %{
+          type: "object",
+          description: "JSON response with greeting message or error"
+        }
+      }
+    },
+    callback: &__MODULE__.handle_auth_greeting_tool/2
+  })
+
   use McpServerHelper,
     server_name: "testgear-mcp-server",
     server_version: "1.0.0",
-    tools: [@testgear_tool, @json_tool]
+    tools: [@testgear_tool, @json_tool, @auth_greeting_tool]
 
   defun chunked_response(conn :: Conn.t) :: Conn.t do
     handle_mcp_request(conn)
@@ -92,6 +114,23 @@ defmodule Testgear.Controller.Mcp do
         conn.request |
         method: :get,
         path_info: ["json"]
+      }
+    }
+    %G2gResponse{status: status, body: body} = Testgear.G2g.send(conn2)
+
+    McpServerHelper.response_json(%{
+      status: status,
+      body: body
+    })
+  end
+
+  defun handle_auth_greeting_tool(conn :: Conn.t, _arguments :: map) :: map do
+    conn2 = %Conn{
+      conn |
+      request: %Request{
+        conn.request |
+        method: :get,
+        path_info: ["auth_greeting"],
       }
     }
     %G2gResponse{status: status, body: body} = Testgear.G2g.send(conn2)
